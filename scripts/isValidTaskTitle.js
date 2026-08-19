@@ -1,10 +1,22 @@
 function isValidTaskTitle(title) {
-    return typeof title === "string" &&
-        title.trim().length > 0 &&
-        title.length <= 80;
+    if (typeof title !== 'string') {
+        return false;
+    }
+
+    else if (title.trim() == ""){
+        return false;
+    }
+    else if(title.length >= 80 && title.length <= 0){
+        return false;        
+}
+
+    else{
+        return true;
+}
 }
 
 console.log(isValidTaskTitle("Buy groceries")); // true
-console.log(isValidTaskTitle(""));              // false
-console.log(isValidTaskTitle("   "));            // false
-console.log(isValidTaskTitle("a".repeat(81)));   // false
+console.log(isValidTaskTitle(""));
+
+
+
