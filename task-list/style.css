@@ -1,8 +1,52 @@
 body {
     font-family: Arial, sans-serif;
-    padding: 30px;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 40px;
 }
 
-li {
-    margin: 10px 0;
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: white;
+    padding: 25px;
+    border-radius: 8px;
+}
+
+h1 {
+    margin-top: 0;
+}
+
+#taskForm {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+#taskInput {
+    flex: 1;
+    padding: 10px;
+    font-size: 16px;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#errorMessage {
+    color: red;
+    min-height: 20px;
+}
+
+#taskList {
+    padding-left: 20px;
+}
+
+#taskList li {
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
 }

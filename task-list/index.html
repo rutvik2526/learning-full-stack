@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Task List</title>
 
     <link rel="stylesheet" href="style.css">
@@ -11,10 +10,34 @@
 
 <body>
 
-    <h1>My Task List</h1>
+    <div class="container">
 
-    <ul id="taskList"></ul>
+        <h1>My Task List</h1>
+
+        <!-- Add Task Form -->
+        <form id="taskForm">
+
+            <input
+                type="text"
+                id="taskInput"
+                placeholder="Enter task name"
+            >
+
+            <button type="submit">
+                Add
+            </button>
+
+        </form>
+
+        <!-- Validation message -->
+        <p id="errorMessage"></p>
+
+        <!-- Tasks will be added here by JavaScript -->
+        <ul id="taskList"></ul>
+
+    </div>
 
     <script src="script.js"></script>
+
 </body>
 </html>
