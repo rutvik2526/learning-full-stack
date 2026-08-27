@@ -1,72 +1,25 @@
 // ==========================================
-// STARTER TASKS
+// STATE
 // ==========================================
 
-const starterTasks = [
-    {
-        id: 1,
-        title: "Learn arrays",
-        createdDate: "2026-08-20",
-        dueDate: "2026-08-25",
-        completed: false
-    },
-
-    {
-        id: 2,
-        title: "Practice JavaScript",
-        createdDate: "2026-08-21",
-        dueDate: "2026-08-26",
-        completed: false
-    },
-
-    {
-        id: 3,
-        title: "Read documentation",
-        createdDate: "2026-08-22",
-        dueDate: "2026-08-27",
-        completed: false
-    }
-];
+let tasks = [];
 
 
 // ==========================================
-// LOAD TASKS FROM LOCAL STORAGE
+// GET HTML ELEMENTS
 // ==========================================
 
-let tasks = loadTasks();
+const taskForm = document.getElementById("taskForm");
 
+const taskInput = document.getElementById("taskInput");
 
-function loadTasks() {
+const errorMessage = document.getElementById("errorMessage");
 
-    const savedTasks = localStorage.getItem("tasks");
+const loadingMessage = document.getElementById("loadingMessage");
 
+const apiErrorMessage = document.getElementById("apiErrorMessage");
 
-    // No saved tasks
-    if (savedTasks === null) {
-
-        return starterTasks;
-
-    }
-
-
-    // Try to read saved JSON
-    try {
-
-        const parsedTasks = JSON.parse(savedTasks);
-
-        return parsedTasks;
-
-    }
-
-    // JSON is broken / malformed
-    catch (error) {
-
-        console.log("Saved task data is invalid.");
-
-        return starterTasks;
-
-    }
-}
+const taskList = document.getElementById("taskList");
 
 
 // ==========================================
@@ -84,16 +37,36 @@ function saveTasks() {
 
 
 // ==========================================
-// GET HTML ELEMENTS
+// LOAD TASKS FROM LOCAL STORAGE
 // ==========================================
 
-const taskForm = document.getElementById("taskForm");
+function loadSavedTasks() {
 
-const taskInput = document.getElementById("taskInput");
+    const savedTasks = localStorage.getItem("tasks");
 
-const errorMessage = document.getElementById("errorMessage");
 
-const taskList = document.getElementById("taskList");
+    if (savedTasks === null) {
+
+        return false;
+
+    }
+
+
+    try {
+
+        tasks = JSON.parse(savedTasks);
+
+        return true;
+
+    } catch (error) {
+
+        console.log("Saved task data is invalid.");
+
+        return false;
+
+    }
+
+}
 
 
 // ==========================================
@@ -102,27 +75,28 @@ const taskList = document.getElementById("taskList");
 
 function renderTasks() {
 
-    // Remove old HTML
     taskList.innerHTML = "";
 
 
-    // Go through every task
     for (let i = 0; i < tasks.length; i++) {
 
         const task = tasks[i];
 
 
-        // Create li
+        // Create list item
+
         const li = document.createElement("li");
 
 
         // Create title
+
         const title = document.createElement("span");
 
         title.textContent = task.title;
 
 
-        // If task is completed
+        // Check completed state
+
         if (task.completed) {
 
             title.classList.add("completed");
@@ -131,10 +105,10 @@ function renderTasks() {
 
 
         // Create Complete button
+
         const completeButton = document.createElement("button");
 
 
-        // Change button text
         if (task.completed) {
 
             completeButton.textContent = "Completed";
@@ -146,38 +120,119 @@ function renderTasks() {
         }
 
 
-        // ==========================================
-        // COMPLETE BUTTON EVENT
-        // ==========================================
+        // Complete button event
 
         completeButton.addEventListener("click", function () {
 
-            // Change only this task
             task.completed = !task.completed;
 
-
-            // Save changed state
             saveTasks();
 
-
-            // Show updated list
             renderTasks();
 
         });
 
 
-        // Add title to li
+        // Add title
+
         li.appendChild(title);
 
 
-        // Add button to li
+        // Add button
+
         li.appendChild(completeButton);
 
 
-        // Add li to task list
+        // Add task to list
+
         taskList.appendChild(li);
 
     }
+
+}
+
+
+// ==========================================
+// FETCH TASKS
+// ==========================================
+
+async function fetchTasks() {
+
+    // Show loading state
+
+    loadingMessage.textContent = "Loading tasks...";
+
+    loadingMessage.style.display = "block";
+
+
+    // Hide old error
+
+    apiErrorMessage.textContent = "";
+
+    apiErrorMessage.style.display = "none";
+
+
+    try {
+
+        // Fetch mock JSON file
+
+        const response = await fetch("tasks.json");
+
+
+        // Check HTTP response
+
+        if (!response.ok) {
+
+            throw new Error(
+                `HTTP error: ${response.status}`
+            );
+
+        }
+
+
+        // Convert response to JavaScript data
+
+        const data = await response.json();
+
+
+        // Put fetched data into state
+
+        tasks = data;
+
+
+        // Save fetched tasks
+
+        saveTasks();
+
+
+        // Hide loading message
+
+        loadingMessage.style.display = "none";
+
+
+        // Show tasks
+
+        renderTasks();
+
+    }
+
+
+    catch (error) {
+
+        // Hide loading message
+
+        loadingMessage.style.display = "none";
+
+
+        // Show error
+
+        apiErrorMessage.textContent =
+            `Failed to load tasks: ${error.message}`;
+
+        apiErrorMessage.style.display = "block";
+
+    }
+
 }
 
 
@@ -187,17 +242,17 @@ function renderTasks() {
 
 taskForm.addEventListener("submit", function (event) {
 
-    // Stop browser from refreshing
+    // Stop page reload
+
     event.preventDefault();
 
 
-    // Get input and remove extra spaces
+    // Get input value
+
     const title = taskInput.value.trim();
 
 
-    // ==========================================
-    // VALIDATION
-    // ==========================================
+    // Check blank title
 
     if (title === "") {
 
@@ -209,13 +264,12 @@ taskForm.addEventListener("submit", function (event) {
     }
 
 
-    // Remove old error
+    // Remove validation error
+
     errorMessage.textContent = "";
 
 
-    // ==========================================
-    // CREATE NEW TASK
-    // ==========================================
+    // Create new task
 
     const newTask = {
 
@@ -233,35 +287,56 @@ taskForm.addEventListener("submit", function (event) {
     };
 
 
-    // ==========================================
-    // ADD TO STATE
-    // ==========================================
+    // Add task to state
 
     tasks.push(newTask);
 
 
-    // ==========================================
-    // SAVE STATE
-    // ==========================================
+    // Save state
 
     saveTasks();
 
 
-    // ==========================================
-    // RENDER UPDATED LIST
-    // ==========================================
+    // Render updated list
 
     renderTasks();
 
 
     // Clear input
+
     taskInput.value = "";
 
 });
 
 
 // ==========================================
-// INITIAL RENDER
+// START APPLICATION
 // ==========================================
 
-renderTasks();
+async function startApp() {
+
+    // First check localStorage
+
+    const hasSavedTasks = loadSavedTasks();
+
+
+    if (hasSavedTasks) {
+
+        // Saved data exists
+
+        loadingMessage.style.display = "none";
+
+        renderTasks();
+
+    } else {
+
+        // No saved data
+
+        await fetchTasks();
+
+    }
+
+}
+
+
+startApp();

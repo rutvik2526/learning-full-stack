@@ -1,86 +1,129 @@
 body {
     font-family: Arial, sans-serif;
+
     background-color: #f4f4f4;
+
     margin: 0;
+
     padding: 40px;
 }
 
+
 .container {
     max-width: 600px;
+
     margin: 0 auto;
+
     background-color: white;
+
     padding: 25px;
+
     border-radius: 8px;
 }
+
 
 h1 {
     margin-top: 0;
 }
 
 
-/* Add task form */
+/* Add Task Form */
 
 #taskForm {
     display: flex;
+
     gap: 10px;
+
     margin-bottom: 10px;
 }
 
+
 #taskInput {
     flex: 1;
+
     padding: 10px;
+
     font-size: 16px;
 }
 
+
 #taskForm button {
     padding: 10px 20px;
+
     font-size: 16px;
+
     cursor: pointer;
 }
 
 
-/* Error message */
+/* Validation Error */
 
 #errorMessage {
     color: red;
+
     min-height: 20px;
 }
 
 
-/* Task list */
+/* Loading Message */
+
+#loadingMessage {
+    color: #555;
+
+    font-weight: bold;
+}
+
+
+/* API Error */
+
+#apiErrorMessage {
+    color: red;
+
+    font-weight: bold;
+}
+
+
+/* Task List */
 
 #taskList {
     padding-left: 0;
+
     list-style: none;
 }
 
 
-/* Individual task */
+/* Individual Task */
 
 #taskList li {
     display: flex;
+
     justify-content: space-between;
+
     align-items: center;
 
     margin-bottom: 10px;
+
     padding: 12px;
 
     background-color: #f0f0f0;
+
     border-radius: 5px;
 }
 
 
-/* Complete button */
+/* Complete Button */
 
 #taskList li button {
     padding: 6px 12px;
+
     cursor: pointer;
 }
 
 
-/* Completed task */
+/* Completed Task */
 
 .completed {
     text-decoration: line-through;
+
     opacity: 0.6;
 }

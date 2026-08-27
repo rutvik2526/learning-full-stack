@@ -2,12 +2,15 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Task List</title>
 
     <link rel="stylesheet" href="style.css">
+
 </head>
 
 <body>
@@ -16,7 +19,9 @@
 
         <h1>My Task List</h1>
 
+
         <!-- Add Task Form -->
+
         <form id="taskForm">
 
             <input
@@ -32,11 +37,25 @@
         </form>
 
 
-        <!-- Error message -->
+        <!-- Validation Error -->
+
         <p id="errorMessage"></p>
 
 
-        <!-- Task list -->
+        <!-- Loading Message -->
+
+        <p id="loadingMessage">
+            Loading tasks...
+        </p>
+
+
+        <!-- API Error -->
+
+        <p id="apiErrorMessage"></p>
+
+
+        <!-- Task List -->
+
         <ul id="taskList"></ul>
 
     </div>
