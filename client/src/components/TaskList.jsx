@@ -1,6 +1,6 @@
 import TaskItem from "./TaskItem";
 
-function TaskList({ tasks }) {
+function TaskList({ tasks, onEdit, onDelete }) {
     return (
         <ul>
             {tasks.map(function (task) {
@@ -8,6 +8,8 @@ function TaskList({ tasks }) {
                     <TaskItem
                         key={task.id}
                         task={task}
+                        onEdit={onEdit}
+                        onDelete={onDelete}
                     />
                 );
             })}
