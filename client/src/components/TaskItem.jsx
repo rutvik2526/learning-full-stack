@@ -3,13 +3,19 @@ function TaskItem({ task, onEdit, onDelete }) {
         <li>
             <h3>{task.title}</h3>
 
-            <p>Project: {task.project}</p>
+            <p>
+                Project: {task.project}
+            </p>
 
-            <p>Status: {task.status}</p>
+            <p>
+                Status: {task.status}
+            </p>
 
             <p>
                 Due Date:{" "}
-                {task.dueDate ? task.dueDate : "No due date"}
+                {task.dueDate
+                    ? task.dueDate
+                    : "No due date"}
             </p>
 
             <button
@@ -18,7 +24,7 @@ function TaskItem({ task, onEdit, onDelete }) {
                     onEdit(task);
                 }}
             >
-                Edit
+                Edit {task.title}
             </button>
 
             <button
@@ -27,7 +33,7 @@ function TaskItem({ task, onEdit, onDelete }) {
                     onDelete(task.id);
                 }}
             >
-                Delete
+                Delete {task.title}
             </button>
         </li>
     );

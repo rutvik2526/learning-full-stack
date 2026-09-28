@@ -117,42 +117,59 @@ function App() {
 
             <TaskForm onAddTask={addTask} />
 
-            <div>
-                <label htmlFor="searchInput">
-                    Search
-                </label>
+            <section>
+                <h2>Task Filters</h2>
 
-                <input
-                    ref={searchInputRef}
-                    id="searchInput"
-                    type="text"
-                    value={searchText}
-                    onChange={function (event) {
-                        setSearchText(event.target.value);
-                    }}
-                    placeholder="Search tasks"
-                />
-            </div>
+                <div>
+                    <label htmlFor="searchInput">
+                        Search tasks
+                    </label>
 
-            <div>
-                <label htmlFor="statusFilter">
-                    Status
-                </label>
+                    <input
+                        ref={searchInputRef}
+                        id="searchInput"
+                        type="text"
+                        value={searchText}
+                        onChange={function (event) {
+                            setSearchText(event.target.value);
+                        }}
+                    />
+                </div>
 
-                <select
-                    id="statusFilter"
-                    value={statusFilter}
-                    onChange={function (event) {
-                        setStatusFilter(event.target.value);
-                    }}
-                >
-                    <option value="All">All</option>
-                    <option value="Incomplete">Incomplete</option>
-                    <option value="Completed">Completed</option>
-                    <option value="In Progress">In Progress</option>
-                    <option value="Pending">Pending</option>
-                </select>
-            </div>
+                <div>
+                    <label htmlFor="statusFilter">
+                        Filter by status
+                    </label>
+
+                    <select
+                        id="statusFilter"
+                        value={statusFilter}
+                        onChange={function (event) {
+                            setStatusFilter(event.target.value);
+                        }}
+                    >
+                        <option value="All">
+                            All statuses
+                        </option>
+
+                        <option value="Incomplete">
+                            Incomplete
+                        </option>
+
+                        <option value="Completed">
+                            Completed
+                        </option>
+
+                        <option value="In Progress">
+                            In Progress
+                        </option>
+
+                        <option value="Pending">
+                            Pending
+                        </option>
+                    </select>
+                </div>
+            </section>
 
             {selectedTaskId !== null && draft && (
                 <TaskEditForm
@@ -163,7 +180,11 @@ function App() {
             )}
 
             {deleteTaskId !== null && (
-                <div>
+                <section aria-labelledby="deleteConfirmationTitle">
+                    <h2 id="deleteConfirmationTitle">
+                        Confirm task deletion
+                    </h2>
+
                     <p>
                         Are you sure you want to delete this task?
                     </p>
@@ -179,14 +200,15 @@ function App() {
                         type="button"
                         onClick={cancelDelete}
                     >
-                        Cancel
+                        Cancel Delete
                     </button>
-                </div>
+                </section>
             )}
 
             {visibleTasks.length === 0 ? (
                 <p>
-                    {searchText.trim() !== "" && statusFilter !== "All"
+                    {searchText.trim() !== "" &&
+                    statusFilter !== "All"
                         ? `No tasks match "${searchText.trim()}" with ${statusFilter} status.`
                         : searchText.trim() !== ""
                             ? `No tasks match "${searchText.trim()}".`

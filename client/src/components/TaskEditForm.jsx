@@ -9,7 +9,7 @@ function TaskEditForm({ draft, onSave, onCancel }) {
         event.preventDefault();
 
         if (title.trim() === "") {
-            setError("Title is required.");
+            setError("Task title is required.");
             return;
         }
 
@@ -28,7 +28,7 @@ function TaskEditForm({ draft, onSave, onCancel }) {
 
             <div>
                 <label htmlFor="editTitle">
-                    Title
+                    Task title
                 </label>
 
                 <input
@@ -37,10 +37,15 @@ function TaskEditForm({ draft, onSave, onCancel }) {
                     value={title}
                     onChange={function (event) {
                         setTitle(event.target.value);
+                        setError("");
                     }}
                 />
 
-                {error && <p>{error}</p>}
+                {error && (
+                    <p role="alert">
+                        {error}
+                    </p>
+                )}
             </div>
 
             <div>
@@ -59,14 +64,14 @@ function TaskEditForm({ draft, onSave, onCancel }) {
             </div>
 
             <button type="submit">
-                Save
+                Save changes
             </button>
 
             <button
                 type="button"
                 onClick={onCancel}
             >
-                Cancel
+                Cancel editing
             </button>
         </form>
     );

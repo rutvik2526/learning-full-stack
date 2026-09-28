@@ -17,7 +17,7 @@ function TaskForm({ onAddTask }) {
             id: Date.now(),
             title: title.trim(),
             project: project.trim(),
-            status: "Incomplete",
+            status: "Pending",
             dueDate: ""
         };
 
@@ -30,35 +30,48 @@ function TaskForm({ onAddTask }) {
 
     return (
         <form onSubmit={handleSubmit}>
+            <h2>Add Task</h2>
+
             <div>
-                <label>Title</label>
+                <label htmlFor="taskTitle">
+                    Task title
+                </label>
 
                 <input
+                    id="taskTitle"
                     type="text"
                     value={title}
                     onChange={function (event) {
                         setTitle(event.target.value);
+                        setError("");
                     }}
-                    placeholder="Enter task title"
                 />
 
-                {error && <p>{error}</p>}
+                {error && (
+                    <p role="alert">
+                        {error}
+                    </p>
+                )}
             </div>
 
             <div>
-                <label>Project</label>
+                <label htmlFor="taskProject">
+                    Project
+                </label>
 
                 <input
+                    id="taskProject"
                     type="text"
                     value={project}
                     onChange={function (event) {
                         setProject(event.target.value);
                     }}
-                    placeholder="Enter project"
                 />
             </div>
 
-            <button type="submit">Add Task</button>
+            <button type="submit">
+                Add Task
+            </button>
         </form>
     );
 }
