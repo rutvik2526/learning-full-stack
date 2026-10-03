@@ -2,10 +2,10 @@ import { useState } from "react";
 
 function TaskForm({ onAddTask }) {
     const [title, setTitle] = useState("");
-    const [project, setProject] = useState("");
+    const [projectId, setProjectId] = useState("");
     const [error, setError] = useState("");
 
-    function handleSubmit(event) {
+    async function handleSubmit(event) {
         event.preventDefault();
 
         if (title.trim() === "") {
@@ -14,18 +14,17 @@ function TaskForm({ onAddTask }) {
         }
 
         const newTask = {
-            id: Date.now(),
             title: title.trim(),
-            project: project.trim(),
-            status: "Pending",
-            dueDate: ""
+            projectId: Number(projectId)
         };
 
-        onAddTask(newTask);
+        const success = await onAddTask(newTask);
 
-        setTitle("");
-        setProject("");
-        setError("");
+        if (success) {
+            setTitle("");
+            setProjectId("");
+            setError("");
+        }
     }
 
     return (
@@ -55,16 +54,16 @@ function TaskForm({ onAddTask }) {
             </div>
 
             <div>
-                <label htmlFor="taskProject">
-                    Project
+                <label htmlFor="taskProjectId">
+                    Project ID
                 </label>
 
                 <input
-                    id="taskProject"
-                    type="text"
-                    value={project}
+                    id="taskProjectId"
+                    type="number"
+                    value={projectId}
                     onChange={function (event) {
-                        setProject(event.target.value);
+                        setProjectId(event.target.value);
                     }}
                 />
             </div>

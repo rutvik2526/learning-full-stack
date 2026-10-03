@@ -1,33 +1,15 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Header from "./components/header";
 import TaskForm from "./components/TaskForm";
 import TaskEditForm from "./components/TaskEditForm";
 import TaskList from "./components/TaskList";
 
 function App() {
-    const [tasks, setTasks] = useState([
-        {
-            id: 1,
-            title: "Learn React",
-            project: "Learning",
-            status: "In Progress",
-            dueDate: "2026-09-10"
-        },
-        {
-            id: 2,
-            title: "Practice Components",
-            project: "React Project",
-            status: "Pending",
-            dueDate: ""
-        },
-        {
-            id: 3,
-            title: "Read API Guide",
-            project: "Learning",
-            status: "Completed",
-            dueDate: "2026-09-12"
-        }
-    ]);
+    const [tasks, setTasks] = useState([]);
+
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+    const [mutationError, setMutationError] = useState("");
 
     const [searchText, setSearchText] = useState("");
     const [statusFilter, setStatusFilter] = useState("All");
@@ -39,30 +21,115 @@ function App() {
 
     const searchInputRef = useRef(null);
 
-    function addTask(newTask) {
-        setTasks(function (currentTasks) {
-            return [...currentTasks, newTask];
-        });
+    useEffect(function () {
+        fetch("http://localhost:5000/api/tasks")
+            .then(function (response) {
+                if (!response.ok) {
+                    throw new Error("Failed to load tasks.");
+                }
+
+                return response.json();
+            })
+            .then(function (data) {
+                setTasks(data);
+                setLoading(false);
+            })
+            .catch(function () {
+                setError(
+                    "Unable to load tasks. Please make sure the server is running."
+                );
+                setLoading(false);
+            });
+    }, []);
+
+    async function addTask(newTask) {
+        setMutationError("");
+
+        try {
+            const response = await fetch(
+                "http://localhost:5000/api/tasks",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        title: newTask.title,
+                        projectId: newTask.projectId
+                    })
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    data.error || "Unable to create task."
+                );
+            }
+
+            setTasks(function (currentTasks) {
+                return [...currentTasks, data];
+            });
+
+            return true;
+        } catch (error) {
+            setMutationError(error.message);
+            return false;
+        }
     }
 
     function startEditing(task) {
         setSelectedTaskId(task.id);
         setDraft({ ...task });
+        setMutationError("");
     }
 
-    function saveEdit(updatedTask) {
-        setTasks(function (currentTasks) {
-            return currentTasks.map(function (task) {
-                if (task.id === updatedTask.id) {
-                    return updatedTask;
+    async function saveEdit(updatedTask) {
+        setMutationError("");
+
+        try {
+            const response = await fetch(
+                `http://localhost:5000/api/tasks/${updatedTask.id}`,
+                {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        title: updatedTask.title,
+                        projectId: updatedTask.projectId,
+                        completed: updatedTask.completed
+                    })
                 }
+            );
 
-                return task;
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    data.error || "Unable to update task."
+                );
+            }
+
+            setTasks(function (currentTasks) {
+                return currentTasks.map(function (task) {
+                    if (task.id === data.id) {
+                        return data;
+                    }
+
+                    return task;
+                });
             });
-        });
 
-        setSelectedTaskId(null);
-        setDraft(null);
+            setSelectedTaskId(null);
+            setDraft(null);
+
+            return true;
+        } catch (error) {
+            setMutationError(error.message);
+            return false;
+        }
     }
 
     function cancelEdit() {
@@ -72,26 +139,48 @@ function App() {
 
     function requestDelete(taskId) {
         setDeleteTaskId(taskId);
+        setMutationError("");
     }
 
     function cancelDelete() {
         setDeleteTaskId(null);
     }
 
-    function confirmDelete() {
-        setTasks(function (currentTasks) {
-            return currentTasks.filter(function (task) {
-                return task.id !== deleteTaskId;
-            });
-        });
+    async function confirmDelete() {
+        setMutationError("");
 
-        setDeleteTaskId(null);
+        try {
+            const response = await fetch(
+                `http://localhost:5000/api/tasks/${deleteTaskId}`,
+                {
+                    method: "DELETE"
+                }
+            );
 
-        setTimeout(function () {
-            if (searchInputRef.current) {
-                searchInputRef.current.focus();
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    data.error || "Unable to delete task."
+                );
             }
-        }, 0);
+
+            setTasks(function (currentTasks) {
+                return currentTasks.filter(function (task) {
+                    return task.id !== deleteTaskId;
+                });
+            });
+
+            setDeleteTaskId(null);
+
+            setTimeout(function () {
+                if (searchInputRef.current) {
+                    searchInputRef.current.focus();
+                }
+            }, 0);
+        } catch (error) {
+            setMutationError(error.message);
+        }
     }
 
     const visibleTasks = tasks.filter(function (task) {
@@ -100,20 +189,47 @@ function App() {
         const matchesSearch =
             search === "" ||
             task.title.toLowerCase().includes(search) ||
-            task.project.toLowerCase().includes(search);
+            String(task.projectId).includes(search);
 
         const matchesStatus =
             statusFilter === "All" ||
+            (statusFilter === "Completed" &&
+                task.completed === true) ||
             (statusFilter === "Incomplete" &&
-                task.status !== "Completed") ||
-            task.status === statusFilter;
+                task.completed === false);
 
         return matchesSearch && matchesStatus;
     });
 
+    if (loading) {
+        return (
+            <div>
+                <Header />
+
+                <p>Loading tasks...</p>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div>
+                <Header />
+
+                <p role="alert">{error}</p>
+            </div>
+        );
+    }
+
     return (
         <div>
             <Header />
+
+            {mutationError && (
+                <p role="alert">
+                    {mutationError}
+                </p>
+            )}
 
             <TaskForm onAddTask={addTask} />
 
@@ -158,14 +274,6 @@ function App() {
 
                         <option value="Completed">
                             Completed
-                        </option>
-
-                        <option value="In Progress">
-                            In Progress
-                        </option>
-
-                        <option value="Pending">
-                            Pending
                         </option>
                     </select>
                 </div>

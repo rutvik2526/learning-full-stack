@@ -2,10 +2,12 @@ import { useState } from "react";
 
 function TaskEditForm({ draft, onSave, onCancel }) {
     const [title, setTitle] = useState(draft.title);
-    const [project, setProject] = useState(draft.project);
+    const [projectId, setProjectId] = useState(
+        String(draft.projectId)
+    );
     const [error, setError] = useState("");
 
-    function handleSubmit(event) {
+    async function handleSubmit(event) {
         event.preventDefault();
 
         if (title.trim() === "") {
@@ -16,10 +18,10 @@ function TaskEditForm({ draft, onSave, onCancel }) {
         const updatedTask = {
             ...draft,
             title: title.trim(),
-            project: project.trim()
+            projectId: Number(projectId)
         };
 
-        onSave(updatedTask);
+        await onSave(updatedTask);
     }
 
     return (
@@ -49,16 +51,16 @@ function TaskEditForm({ draft, onSave, onCancel }) {
             </div>
 
             <div>
-                <label htmlFor="editProject">
-                    Project
+                <label htmlFor="editProjectId">
+                    Project ID
                 </label>
 
                 <input
-                    id="editProject"
-                    type="text"
-                    value={project}
+                    id="editProjectId"
+                    type="number"
+                    value={projectId}
                     onChange={function (event) {
-                        setProject(event.target.value);
+                        setProjectId(event.target.value);
                     }}
                 />
             </div>

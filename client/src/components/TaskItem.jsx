@@ -1,21 +1,18 @@
 function TaskItem({ task, onEdit, onDelete }) {
+    const status = task.completed
+        ? "Completed"
+        : "Incomplete";
+
     return (
         <li>
             <h3>{task.title}</h3>
 
             <p>
-                Project: {task.project}
+                Project ID: {task.projectId}
             </p>
 
             <p>
-                Status: {task.status}
-            </p>
-
-            <p>
-                Due Date:{" "}
-                {task.dueDate
-                    ? task.dueDate
-                    : "No due date"}
+                Status: {status}
             </p>
 
             <button

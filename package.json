@@ -1,0 +1,21 @@
+{
+  "name": "learning-full-stack",
+  "version": "1.0.0",
+  "description": "it is the project for learning full stack with the guidance of denish vaghasiya",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rutvik2526/learning-full-stack.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/rutvik2526/learning-full-stack/issues"
+  },
+  "homepage": "https://github.com/rutvik2526/learning-full-stack#readme"
+}
